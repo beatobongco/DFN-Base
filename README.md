@@ -25,17 +25,17 @@ FROM python:2.7-onbuild
 A special image that copies your `requirements.txt` to `/usr/src/app` and the executes
 `pip install requirements.txt`
 
+If you choose to use a python image without `-onbuild` you need to include the following:
+
 ```
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 RUN pip install -r requirements.txt
 ```
 
-If you choose to use a python image without -onbuild you need to include the above.
-
 `FROM` - which Docker image you will use
 
-`COPY` [host path] [container path] - copies directory contents from host path to container path. Faster than ADD because ADD can be used to copy and extract zipped files from URLs
+`COPY` [host path] [container path] - copies directory contents from host path to container path. Faster than ADD because ADD has extra overhead and can be used to copy and extract zipped files from URLs
 
 `WORKDIR`- set the pwd in the container
 
@@ -43,26 +43,32 @@ If you choose to use a python image without -onbuild you need to include the abo
 
 ### fig.yml
 
-We will use `fig.yml` for development.
+We will use `fig.yml` for development. Notice that no `ports` are exposed and our `command` key is different.
+
+```
+gunicorn -w 4 -b 0.0.0.0:1337 app:app
+```
+
+That's because we'll be using `nginx` as a reverse proxy and `gunicorn` as our HTTP server. This command specifically tells us that gunicorn will run with 4 workers and be bound to port 1337 running our flask app. [python file name]:[our variable which contains that flask app object]
 
 `build: web`
 
 This tells fig to build the `Dockerfile` inside the `/web` directory on your host machine.
 
 ```
-  ports:
-    - 80:1337
+ports:
+  - 80:1337
 ```
 
 Exposes ports [host machine]:[container]. So `port 1337` inside the container will be exposed as `port 80` on your host machine.
 
 ```
-  volumes:
-    - web:/usr/src/app
+volumes:
+  - web:/usr/src/app
 ```
 
 Docker volumes are used to save and share data among containers.
-We want our app to be inside a volume so that when we make changes to our Flask app, we don't need to fig build again.
+We want our app to be inside a volume so that when we make changes to our Flask app, we don't need to run `fig build` again.
 
 [Learn more about volumes here](https://docs.docker.com/userguide/dockervolumes/)
 
@@ -97,7 +103,9 @@ nginx:
 ### Notes on fig
 
 `fig up` basically runs your instructions in your `fig.yml` file i.e. creates the instances, volumes, command, workdir
+
 `fig stop && start` - use this when the contents of your volumes are updated i.e. when using gunicorn and you updated your flask app
+
 `fig -f yourfig.yml` - run different fig.yml files
 
 
