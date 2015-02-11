@@ -100,6 +100,49 @@ nginx:
 
 `volumes` - we'll put the configuration file for nginx in the correct place in our nginx container `/etc/nginx/nginx.conf` `:ro` means `read-only`
 
+### nginx.conf
+
+This is the important part of the configuration file which allows us to view our flask app.
+
+Remember what we did with fig's `link` command? Yeah now we can access our web container by just typing in `web:1337`. Remember the flask app was running in port 1337!
+
+
+```
+upstream web {
+    ip_hash;
+    server web:1337;
+  }
+```
+
+Think of `upstream` as a shortcut. Now all references to web will be directed to `http://web:1337`
+
+```
+server {
+     listen 80;
+
+     server_name www-dev.beatobongco.com;
+
+     access_log  /var/log/nginx/access.log;
+     error_log  /var/log/nginx/error.log;
+
+     location / {
+         proxy_pass         http://web;
+         proxy_redirect     off;
+
+         proxy_set_header   Host             $host;
+         proxy_set_header   X-Real-IP        $remote_addr;
+         proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+     }
+ }
+```
+
+`listen 80` means nginx will serve the content at port 80.
+
+`server_name` will be our url. Change it to whatever you like, just remember the domain must be yours for it to work. Locally though you can use any domain. i.e. www.example.com
+
+`proxy_pass` is where you set what `listen 80` will show. In this case, we want it to be our web app.
+
+
 ### Notes on fig
 
 `fig up` basically runs your instructions in your `fig.yml` file i.e. creates the instances, volumes, command, workdir
