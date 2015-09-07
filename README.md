@@ -9,6 +9,7 @@ This repo was created for learning purposes and for future reference.
 
 ## How to run
 
+0. `git clone git@github.com:beatobongco/DFN-Base.git .` to clone without project directory
 1. `docker-compose build`
 2. (run for development - Werkzeug) `docker-compose up -d`
 3. (run for prod - gunicorn) `docker-compose -f docker-compose-prod.yml up -d`
