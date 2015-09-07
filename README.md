@@ -1,7 +1,9 @@
-# DFN - Docker-Flask-Nginx Template
+# DFN Base
+
+Docker-Flask-Nginx base template. 
 
 A simple template for creating flask apps running behind gunicorn and nginx,
-containerized in docker-compose and docker.
+containerized in docker.
 
 This repo was created for learning purposes and for future reference.
 
@@ -145,10 +147,10 @@ server {
 
 ### Notes on docker-compose
 
-`docker-compose up` basically runs your instructions in your `docker-compose.yml` file i.e. creates the instances, volumes, command, workdir
+`docker-compose up` basically runs your instructions in your `docker-compose.yml` file i.e. builds images, attaches volumes, runs command, etc.
 
-`docker-compose stop && start` - use this when the contents of your volumes are updated i.e. when using gunicorn and you updated your flask app
+`docker-compose stop && docker-compose start` - use this when the contents of your volumes are updated i.e. when using gunicorn and you updated your flask app
 
-`docker-compose -f yourdocker-compose.yml` - run different docker-compose.yml files
+`docker-compose -f specific.yml` - run different docker-compose.yml files
 
 
