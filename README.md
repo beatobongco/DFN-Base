@@ -1,18 +1,18 @@
-# Fig-Flask-Nginx
+# DFN - Docker-Flask-Nginx Template
 
-Simple template for creating flask apps running behind gunicorn and nginx,
-containerized in fig and docker.
+A simple template for creating flask apps running behind gunicorn and nginx,
+containerized in docker-compose and docker.
 
 This repo was created for learning purposes and for future reference.
 
 ## How to run
 
-1. `fig build`
-2. (run for development - Werkzeug) `fig up -d`
-3. (run for prod - gunicorn) `fig -f fig-prod.yml up -d`
+1. `docker-compose build`
+2. (run for development - Werkzeug) `docker-compose up -d`
+3. (run for prod - gunicorn) `docker-compose -f docker-compose-prod.yml up -d`
 
-`fig logs web` Check out the logs of flask or gunicorn
-`fig rm [container name]` When things go weird try removing container and then using `fig up` again.
+`docker-compose logs web` Check out the logs of flask or gunicorn.
+`docker-compose rm [container name]` When things go weird try removing container and then using `docker-compose up` again.
 
 ## Explanation
 
@@ -41,9 +41,9 @@ RUN pip install -r requirements.txt
 
 `RUN` - run stuff based on where you are (WORKDIR)
 
-### fig.yml
+### docker-compose.yml
 
-We will use `fig.yml` for development. Notice that no `ports` are exposed and our `command` key is different.
+We will use `docker-compose.yml` for development. Notice that no `ports` are exposed and our `command` key is different.
 
 ```
 gunicorn -w 4 -b 0.0.0.0:1337 app:app
@@ -53,7 +53,7 @@ That's because we'll be using `nginx` as a reverse proxy and `gunicorn` as our H
 
 `build: web`
 
-This tells fig to build the `Dockerfile` inside the `/web` directory on your host machine.
+This tells docker-compose to build the `Dockerfile` inside the `/web` directory on your host machine.
 
 ```
 ports:
@@ -68,17 +68,17 @@ volumes:
 ```
 
 Docker volumes are used to save and share data among containers.
-We want our app to be inside a volume so that when we make changes to our Flask app, we don't need to run `fig build` again.
+We want our app to be inside a volume so that when we make changes to our Flask app, we don't need to run `docker-compose build` again.
 
 [Learn more about volumes here](https://docs.docker.com/userguide/dockervolumes/)
 
 `command: python app.py`
 
-`command` tells fig to run a command (duh). What you should note is that this is influenced by your Dockerfile's `WORKDIR` or you can influence this by your fig.yml's `working_dir`
+`command` tells docker-compose to run a command (duh). What you should note is that this is influenced by your Dockerfile's `WORKDIR` or you can influence this by your docker-compose.yml's `working_dir`
 
-### fig-prod.yml
+### docker-compose-prod.yml
 
-We will use this `.yml` file for production. Note that when we use `fig-prod.yml`, we will need to use `fig stop && fig start` for changes to the flask app to be reflected. This is because gunicorn needs to be restarted.
+We will use this `.yml` file for production. Note that when we use `docker-compose-prod.yml`, we will need to use `docker-compose stop && docker-compose start` for changes to the flask app to be reflected. This is because gunicorn needs to be restarted.
 
 You'll notice there's a new service called `nginx`. This is our HTTP server for production.
 
@@ -98,13 +98,13 @@ nginx:
 
 `links` - link to containers in another service. It actually writes the IP address of the target container to `etc/hosts/` of the current container so in this case, our nginx container will have the IP address of our web service which can be accessed at `http://web` and its port 5000 for example at `http://web:5000`
 
-`volumes` - we'll put the configuration file for nginx in the correct place in our nginx container `/etc/nginx/nginx.conf` `:ro` means `read-only`
+`volumes` - we'll put the condocker-composeuration file for nginx in the correct place in our nginx container `/etc/nginx/nginx.conf` `:ro` means `read-only`
 
 ### nginx.conf
 
-This is the important part of the configuration file which allows us to view our flask app.
+This is the important part of the condocker-composeuration file which allows us to view our flask app.
 
-Remember what we did with fig's `link` command? Yeah now we can access our web container by just typing in `web:1337`. Remember the flask app was running in port 1337!
+Remember what we did with docker-compose's `link` command? Yeah now we can access our web container by just typing in `web:1337`. Remember the flask app was running in port 1337!
 
 
 ```
@@ -143,12 +143,12 @@ server {
 `proxy_pass` is where you set what `listen 80` will show. In this case, we want it to be our web app.
 
 
-### Notes on fig
+### Notes on docker-compose
 
-`fig up` basically runs your instructions in your `fig.yml` file i.e. creates the instances, volumes, command, workdir
+`docker-compose up` basically runs your instructions in your `docker-compose.yml` file i.e. creates the instances, volumes, command, workdir
 
-`fig stop && start` - use this when the contents of your volumes are updated i.e. when using gunicorn and you updated your flask app
+`docker-compose stop && start` - use this when the contents of your volumes are updated i.e. when using gunicorn and you updated your flask app
 
-`fig -f yourfig.yml` - run different fig.yml files
+`docker-compose -f yourdocker-compose.yml` - run different docker-compose.yml files
 
 
