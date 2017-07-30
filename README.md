@@ -1,6 +1,6 @@
 # DFN Base
 
-Docker-Flask-Nginx base template. 
+Docker-Flask-Nginx base template.
 
 A simple template for creating flask apps running behind gunicorn and nginx,
 containerized in docker.
@@ -101,7 +101,7 @@ nginx:
 
 `links` - link to containers in another service. It actually writes the IP address of the target container to `etc/hosts/` of the current container so in this case, our nginx container will have the IP address of our web service which can be accessed at `http://web` and its port 5000 for example at `http://web:5000`
 
-`volumes` - we'll put the condocker-composeuration file for nginx in the correct place in our nginx container `/etc/nginx/nginx.conf` `:ro` means `read-only`
+`volumes` - we'll put the configuration file for nginx in the correct place in our nginx container `/etc/nginx/nginx.conf` `:ro` means `read-only`
 
 ### nginx.conf
 
