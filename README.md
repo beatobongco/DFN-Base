@@ -22,7 +22,7 @@ This repo was created for learning purposes and for future reference.
 ### Dockerfile
 
 ```
-FROM python:2.7-onbuild
+FROM python:3.6-onbuild
 ```
 
 A special image that copies your `requirements.txt` to `/usr/src/app` and the executes

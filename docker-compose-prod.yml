@@ -12,4 +12,4 @@ nginx:
   links:
     - web:web
   volumes:
-    - nginx.conf:/etc/nginx/nginx.conf:ro
+    - ./nginx.conf:/etc/nginx/nginx.conf:ro
