@@ -1,7 +1,7 @@
 web:
   build: web
   volumes:
-    - web:/usr/src/app
+    - ./web:/usr/src/app
   command: gunicorn -w 4 -b 0.0.0.0:1337 app:app
 
 nginx:
@@ -10,6 +10,6 @@ nginx:
     - 80:80
     - 443:443
   links:
-    - web:web
+    - web
   volumes:
     - ./nginx.conf:/etc/nginx/nginx.conf:ro

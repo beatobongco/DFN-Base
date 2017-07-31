@@ -3,5 +3,5 @@ web:
   ports:
     - 1337:1337
   volumes:
-    - web:/usr/src/app
+    - ./web:/usr/src/app
   command: python app.py
