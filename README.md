@@ -105,7 +105,7 @@ nginx:
 
 ### nginx.conf
 
-This is the important part of the condocker-composeuration file which allows us to view our flask app.
+This is the important part of the nginx configuration file which allows us to view our flask app.
 
 Remember what we did with docker-compose's `link` command? Yeah now we can access our web container by just typing in `web:1337`. Remember the flask app was running in port 1337!
 
